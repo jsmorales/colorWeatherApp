@@ -21,13 +21,11 @@
 
     <TextView
         android:id="@+id/descriptionTextView"
+        style="@style/mainStyleColorWeatherApp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:fontFamily="sans-serif"
-        android:padding="20dp"
         android:text="Partly Cloudy"
-        android:textColor="@android:color/white"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="@+id/iconImageView"
         app:layout_constraintHorizontal_bias="0.571"
@@ -36,6 +34,7 @@
 
     <TextView
         android:id="@+id/currentTempTextView"
+        style="@style/mainStyleColorWeatherApp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -44,7 +43,7 @@
         app:layout_constraintStart_toStartOf="@+id/descriptionTextView"
         app:layout_constraintTop_toBottomOf="@+id/descriptionTextView"
         android:textSize="54dp"
-        android:textColor="@android:color/white"/>
+        />
 
     <ImageView
         android:id="@+id/degreeImageView"
@@ -62,26 +61,26 @@
 
     <TextView
         android:id="@+id/highTempTextView"
+        style="@style/mainStyleColorWeatherApp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="60dp"
         android:layout_marginLeft="60dp"
         android:layout_marginTop="10dp"
         android:text="H:19°"
-        android:textColor="#ffffff"
         android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/currentTempTextView" />
 
     <TextView
         android:id="@+id/lowTempTextView"
+        style="@style/mainStyleColorWeatherApp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="60dp"
         android:layout_marginRight="60dp"
         android:text="L:12°"
-        android:textColor="#ffffff"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/currentTempTextView" />

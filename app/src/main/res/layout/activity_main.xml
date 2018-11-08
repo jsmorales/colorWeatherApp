@@ -25,7 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="Partly Cloudy"
+        android:text="@string/partly_cloudy"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="@+id/iconImageView"
         app:layout_constraintHorizontal_bias="0.571"
@@ -39,7 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="19"
-        android:textSize="54dp"
+        android:textSize="54sp"
         app:layout_constraintEnd_toEndOf="@+id/descriptionTextView"
         app:layout_constraintStart_toStartOf="@+id/descriptionTextView"
         app:layout_constraintTop_toBottomOf="@+id/descriptionTextView" />
@@ -107,7 +107,7 @@
         android:layout_marginLeft="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:text="Daily"
+        android:text="@string/daily_btn_title"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintStart_toStartOf="parent" />
@@ -121,7 +121,7 @@
         android:layout_marginLeft="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:text="Hourly"
+        android:text="@string/hourly_btn_title"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
         app:layout_constraintStart_toStartOf="@+id/guideline" />
@@ -135,7 +135,7 @@
         android:layout_marginLeft="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:text="Minutetly"
+        android:text="@string/minutetly_btn_title"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline2" />

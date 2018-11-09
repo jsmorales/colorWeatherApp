@@ -6,4 +6,5 @@
     <string name="daily_btn_title">Daily</string>
     <string name="hourly_btn_title">Hourly</string>
     <string name="minutetly_btn_title">Minutetly</string>
+    <string name="minutely_forecast">Minutely Forecast</string>
 </resources>

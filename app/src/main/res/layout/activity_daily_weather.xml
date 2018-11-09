@@ -8,7 +8,7 @@
     android:background="#00D2FF">
 
     <TextView
-        android:id="@+id/dailyWeatherTitleTextView"
+        android:id="@+id/MinutelyWeatherTitleTextView"
         style="@style/mainStyleColorWeatherApp"
         android:textSize="24sp"
         android:textStyle="bold"
@@ -22,6 +22,6 @@
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/dailyWeatherTitleTextView"
+        android:layout_below="@+id/MinutelyWeatherTitleTextView"
         android:layout_centerHorizontal="true" />
 </RelativeLayout>

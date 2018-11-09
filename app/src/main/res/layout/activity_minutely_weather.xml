@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.johanmorales.colorweatherapp.MinutelyWeatherActivity"
+    android:background="#00D2FF">
+
+    <TextView
+        android:id="@+id/MinutelyWeatherTitleTextView"
+        style="@style/mainStyleColorWeatherApp"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:text="@string/minutely_forecast" />
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/MinutelyWeatherTitleTextView"
+        android:layout_centerHorizontal="true" />
+
+</RelativeLayout>

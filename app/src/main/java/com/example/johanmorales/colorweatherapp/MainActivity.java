@@ -1,5 +1,6 @@
 package com.example.johanmorales.colorweatherapp;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -59,9 +60,7 @@ public class MainActivity extends Activity {
 
         //--------------------------------------------------------------------------------------
         //esta clase lleva como parametro la activity para poder bindear los elementos res
-        CurrentWeather cu = new CurrentWeather(MainActivity.this);
-
-        final CurrentWeather cuOfJs = new CurrentWeather(MainActivity.this);
+        /*CurrentWeather cu = new CurrentWeather(MainActivity.this);
 
         cu.setDescription("Clear Night");
         cu.setCurrentTemp("14");
@@ -76,7 +75,7 @@ public class MainActivity extends Activity {
         descriptionTextView.setText(cu.getDescription());
         currentTempTextView.setText(cu.getCurrentTemp());
         highTempTextView.setText(cu.getHighTemp());
-        lowTempTextView.setText(cu.getLowTemp());
+        lowTempTextView.setText(cu.getLowTemp());*/
         //--------------------------------------------------------------------------------------
 
         //Volley ejemplo peticion http con android
@@ -104,41 +103,39 @@ public class MainActivity extends Activity {
             }
         });*/
 
-        String urlForecast = "https://api.darksky.net/forecast/4c6fbf2dde7f441af012c072c04ac356/37.8267,-122.4233";
+        /*
+        * Recuerda que…
+            Las imágenes y recursos visuales van dentro de la carpeta drawable.
+            Para acceder a los recursos drawable en tus layouts utilizas @drawable/nombre_de_la_imagen.
+            Para acceder a los recursos drawable desde tu código utilizas R.drawable.nombre_de_la_imagen.
+            Una ImageView contiene imágenes. En tu layout se utiliza el atributo android:src para especificar la imagen que usaras. En tu código utilizas setImageResource() para especificar la imagen
+        * */
+
+        String urlForecast = "https://api.darksky.net/forecast/4c6fbf2dde7f441af012c072c04ac356/37.8267,-122.4233?units=si&lang=es";
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, urlForecast, null, new Response.Listener<JSONObject>() {
 
                     //cuOfJs
 
+                    @SuppressLint("SetTextI18n")
                     @Override
                     public void onResponse(JSONObject response) {
 
                         try {
 
-                            String timeZone = response.getString("timezone");
-                            JSONObject currently = response.getJSONObject("currently");
-                            JSONObject daily = response.getJSONObject("daily");
-                            JSONArray dailyDataArray = daily.getJSONArray("data");
-                            JSONObject dailyToday = dailyDataArray.getJSONObject(0);
+                            CurrentWeather cuOfJsRes = getCurrentWeatherObject(MainActivity.this, response);
 
-                            cuOfJs.setDescription(currently.getString("summary"));
-                            cuOfJs.setIconImage(currently.getString("icon"));
-                            cuOfJs.setCurrentTemp(currently.getString("temperature"));
-                            cuOfJs.setHighTemp(dailyToday.getString("temperatureHigh"));
-                            cuOfJs.setLowTemp(dailyToday.getString("temperatureLow"));
-                            cuOfJs.setTimeZone(timeZone);
-
-                            iconImageView.setImageDrawable(cuOfJs.getIconDrawableResource());
-                            timeZoneTextView.setText(cuOfJs.getTimeZone());
-                            descriptionTextView.setText(cuOfJs.getDescription());
-                            currentTempTextView.setText(cuOfJs.getCurrentTemp());
-                            highTempTextView.setText(cuOfJs.getHighTemp());
-                            lowTempTextView.setText(cuOfJs.getLowTemp());
+                            iconImageView.setImageDrawable(cuOfJsRes.getIconDrawableResource());
+                            timeZoneTextView.setText(cuOfJsRes.getTimeZone());
+                            descriptionTextView.setText(cuOfJsRes.getDescription());
+                            currentTempTextView.setText(cuOfJsRes.getCurrentTemp().toString());
+                            highTempTextView.setText(String.format("H: %s°",cuOfJsRes.getHighTemp().toString()));
+                            lowTempTextView.setText(String.format("L: %s°",cuOfJsRes.getLowTemp().toString()));
 
                         }catch (JSONException error){
 
-                            timeZoneTextView.setText(error.toString());
+                            descriptionTextView.setText(error.getMessage());
                         }
                     }
                 }, new Response.ErrorListener() {
@@ -147,6 +144,9 @@ public class MainActivity extends Activity {
                     public void onErrorResponse(VolleyError error) {
                         // TODO: Handle error
 
+                        Log.e(TAG, error.getMessage());
+
+                        descriptionTextView.setText(error.getMessage());
                     }
                 });
 
@@ -168,6 +168,27 @@ public class MainActivity extends Activity {
             }
         });
 
+    }
+
+    private CurrentWeather getCurrentWeatherObject (Activity activity, JSONObject response) throws JSONException {
+
+        final CurrentWeather cuOfJs = new CurrentWeather(activity);
+
+        String timeZone = response.getString("timezone");
+        JSONObject currently = response.getJSONObject("currently");
+        JSONObject daily = response.getJSONObject("daily");
+        JSONArray dailyDataArray = daily.getJSONArray("data");
+        JSONObject dailyToday = dailyDataArray.getJSONObject(0);
+
+        cuOfJs.setDescription(currently.getString("summary"));
+        cuOfJs.setIconImage(currently.getString("icon"));
+        //en caso de necesitar redondear la cantidad se utiliza Math.round(int);
+        cuOfJs.setCurrentTemp((double) Math.round(currently.getDouble("temperature")));
+        cuOfJs.setHighTemp((double) Math.round(dailyToday.getDouble("temperatureHigh")));
+        cuOfJs.setLowTemp((double) Math.round(dailyToday.getDouble("temperatureLow")));
+        cuOfJs.setTimeZone(timeZone);
+
+        return cuOfJs;
     }
 
     //forma mas practica de añadir eventos click a los elementos

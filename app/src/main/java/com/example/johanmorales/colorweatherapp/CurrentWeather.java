@@ -11,9 +11,9 @@ public class CurrentWeather {
 
     private String iconImage;
     private String description;
-    private String currentTemp;
-    private String highTemp;
-    private String lowTemp;
+    private Double currentTemp;
+    private Double highTemp;
+    private Double lowTemp;
     private String timeZone;
 
 
@@ -68,27 +68,27 @@ public class CurrentWeather {
         this.description = description;
     }
 
-    public String getCurrentTemp() {
+    public Double getCurrentTemp() {
         return currentTemp;
     }
 
-    public void setCurrentTemp(String currentTemp) {
+    public void setCurrentTemp(Double currentTemp) {
         this.currentTemp = currentTemp;
     }
 
-    public String getHighTemp() {
+    public Double getHighTemp() {
         return highTemp;
     }
 
-    public void setHighTemp(String highTemp) {
+    public void setHighTemp(Double highTemp) {
         this.highTemp = highTemp;
     }
 
-    public String getLowTemp() {
+    public Double getLowTemp() {
         return lowTemp;
     }
 
-    public void setLowTemp(String lowTemp) {
+    public void setLowTemp(Double lowTemp) {
         this.lowTemp = lowTemp;
     }
 

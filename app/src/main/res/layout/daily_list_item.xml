@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:background="@drawable/bg_gradient_color">
+
+    <TextView
+        android:id="@+id/titleDailyTextView"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        style="@style/mainStyleColorWeatherApp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="Today" />
+
+    <TextView
+        android:id="@+id/descriptionListTextView"
+        style="@style/mainStyleColorWeatherApp"
+        android:textSize="18sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Partly Cloudy in the morning." />
+
+    <TextView
+        android:id="@+id/probabilityListTextView"
+        style="@style/mainStyleColorWeatherApp"
+        android:textSize="18sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Rain Probability: 0%" />
+</LinearLayout>

@@ -1,13 +1,51 @@
 package com.example.johanmorales.colorweatherapp;
 
-import android.app.Activity;
+import android.app.ListActivity;
 import android.os.Bundle;
+import android.widget.ArrayAdapter;
 
-public class DailyWeatherActivity extends Activity {
+import java.util.ArrayList;
+
+/*
+* Esta clase era una activity normal pero se paso a ListActivity ya que esta clase
+* ya tiene definidos los metodos que se van a utilizar.
+*
+* el ListView del layout debe llevar el id --> android:id="@android:id/list"
+* */
+
+public class DailyWeatherActivity extends ListActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_daily_weather);
+
+        //En un ArrayList se agregan los dias de la semana
+
+        ArrayList<String> daysArray = new ArrayList<>();
+
+        daysArray.add("Lunes");
+        daysArray.add("Martes");
+        daysArray.add("Miercoles");
+        daysArray.add("Jueves");
+        daysArray.add("Viernes");
+        daysArray.add("Sabado");
+        daysArray.add("Domingo");
+
+        //teniendo los datos en el arraylist usamos el adapter para mostrarlo en nuestra ListView
+        //del layout
+        //se pasan los parametros this( esta lista), la ListView en el layout, y el array con los datos a listar
+
+        ArrayAdapter<String> dataArrayAdapter = new ArrayAdapter<>(this,android.R.layout.simple_list_item_1,daysArray);
+        //por ultimo se setea el list adapter que es un metodo de esta misma clase ListActivity
+        setListAdapter(dataArrayAdapter);
+
+        /*
+        * Recuerda que…
+        La clase ListActivity provee métodos para facilitar el uso de las ListViews.
+        Una ListView debe tener el id @android:id/list para que tu ListActivity la pueda usar.
+        Puedes implementar el método onListItemClick() para detectar cuando un elemento de tu lista recibe un click del usuario(touch)
+        Usas el método setListAdapter() para asignarle su adaptador a una lista.
+        * */
     }
 }

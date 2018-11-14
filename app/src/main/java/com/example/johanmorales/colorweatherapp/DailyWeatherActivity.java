@@ -4,6 +4,8 @@ import android.app.ListActivity;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 
+import com.example.johanmorales.colorweatherapp.Adapters.DailyWeatherAdapter;
+
 import java.util.ArrayList;
 
 /*
@@ -22,24 +24,28 @@ public class DailyWeatherActivity extends ListActivity {
 
         //En un ArrayList se agregan los dias de la semana
 
-        ArrayList<String> daysArray = new ArrayList<>();
+        ArrayList<Day> daysArray = new ArrayList<>();
 
-        daysArray.add("Lunes");
-        daysArray.add("Martes");
-        daysArray.add("Miercoles");
-        daysArray.add("Jueves");
-        daysArray.add("Viernes");
-        daysArray.add("Sabado");
-        daysArray.add("Domingo");
+        for (int i = 0; i < 500; i++){
+
+            Day dia = new Day();
+
+            dia.setDayName("Lunes");
+            dia.setDescription("Parcialmente soleado.");
+            dia.setProbability("Lluvia del 20%");
+
+            daysArray.add(dia);
+        }
+
+        DailyWeatherAdapter diaAdaptador = new DailyWeatherAdapter(daysArray, this);
+        setListAdapter(diaAdaptador);
 
         //teniendo los datos en el arraylist usamos el adapter para mostrarlo en nuestra ListView
         //del layout
         //se pasan los parametros this( esta lista), la ListView en el layout, y el array con los datos a listar
-
-        ArrayAdapter<String> dataArrayAdapter = new ArrayAdapter<>(this,android.R.layout.simple_list_item_1,daysArray);
+        //ArrayAdapter<String> dataArrayAdapter = new ArrayAdapter<>(this,android.R.layout.simple_list_item_1,daysArray);
         //por ultimo se setea el list adapter que es un metodo de esta misma clase ListActivity
-        setListAdapter(dataArrayAdapter);
-
+        //setListAdapter(dataArrayAdapter);
         /*
         * Recuerda que…
         La clase ListActivity provee métodos para facilitar el uso de las ListViews.

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:background="@drawable/bg_gradient_color">
+
+    <TextView
+        android:id="@+id/titleHourlyItemTextView"
+        style="@style/mainStyleColorWeatherApp"
+        android:textSize="26sp"
+        android:textStyle="bold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="12:00" />
+
+    <TextView
+        android:id="@+id/descriptionHourlyTextView"
+        style="@style/mainStyleColorWeatherApp"
+        android:textSize="18sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Party Cloudy" />
+</LinearLayout>

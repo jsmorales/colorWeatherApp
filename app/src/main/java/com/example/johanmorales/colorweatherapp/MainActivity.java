@@ -111,7 +111,7 @@ public class MainActivity extends Activity {
             Una ImageView contiene imágenes. En tu layout se utiliza el atributo android:src para especificar la imagen que usaras. En tu código utilizas setImageResource() para especificar la imagen
         * */
 
-        String urlForecast = "https://api.darksky.net/forecast/4c6fbf2dde7f441af012c072c04ac356/37.8267,-122.4233?units=si&lang=es";
+        String urlForecast = "https://api.darksky.net/forecast/4c6fbf2dde7f441af012c072c04ac356/37.8267,-122.4233?units=si&lang=en";
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, urlForecast, null, new Response.Listener<JSONObject>() {

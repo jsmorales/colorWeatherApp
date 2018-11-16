@@ -23,9 +23,9 @@ public class MinutelyWeatherActivity extends Activity {
 
         ButterKnife.bind(this);
 
-        ArrayList<Minute> minuteListView = new ArrayList<>();
+        ArrayList<Minute> minuteListView = getIntent().getParcelableArrayListExtra("minutes");
 
-        for (int i = 0; i < 500; i++){
+        /*for (int i = 0; i < 500; i++){
 
             Minute minute = new Minute();
 
@@ -33,7 +33,7 @@ public class MinutelyWeatherActivity extends Activity {
             minute.setRainProbability("12%");
 
             minuteListView.add(minute);
-        }
+        }*/
 
         //The adapter type Recycler
         MinutelyWeatherAdapter minutelyWeatherAdapter = new MinutelyWeatherAdapter(minuteListView, this);

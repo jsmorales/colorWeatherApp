@@ -25,6 +25,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.TimeZone;
+
 import butterknife.BindDrawable;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,6 +39,15 @@ import butterknife.OnClick;
 public class MainActivity extends Activity {
 
     public static final String TAG = MainActivity.class.getSimpleName(); //gets the name of the app
+    //para crear estas constantes desde harcode se pulsa ctr+alt+c y se reemplazan todas las coincidencias
+    //que registre el ide.
+    public static final String DAILY = "daily";
+    public static final String DATA = "data";
+    public static final String TIME = "time";
+    public static final String SUMMARY = "summary";
+    public static final String PRECIP_PROBABILITY = "precipProbability";
+    public static final String MINUTELY = "minutely";
+    public static final String TIMEZONE = "timezone";
 
     private TextView dailyButton;
 
@@ -50,6 +65,11 @@ public class MainActivity extends Activity {
 
     //with butterKnife forma de asignar una view con un elemento
     //@BindView(R.id.btnMenu2TextView) TextView hourlyButton;
+
+    //Arraylist Results
+    ArrayList<Day> arrListDays;
+    ArrayList<Hour> arrListHours;
+    ArrayList<Minute> arrListMinutes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,7 +131,7 @@ public class MainActivity extends Activity {
             Una ImageView contiene imágenes. En tu layout se utiliza el atributo android:src para especificar la imagen que usaras. En tu código utilizas setImageResource() para especificar la imagen
         * */
 
-        String urlForecast = "https://api.darksky.net/forecast/4c6fbf2dde7f441af012c072c04ac356/37.8267,-122.4233?units=si&lang=en";
+        String urlForecast = "https://api.darksky.net/forecast/4c6fbf2dde7f441af012c072c04ac356/37.8267,-122.4233?units=si&lang=es";
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, urlForecast, null, new Response.Listener<JSONObject>() {
@@ -132,6 +152,15 @@ public class MainActivity extends Activity {
                             currentTempTextView.setText(cuOfJsRes.getCurrentTemp().toString());
                             highTempTextView.setText(String.format("H: %s°",cuOfJsRes.getHighTemp().toString()));
                             lowTempTextView.setText(String.format("L: %s°",cuOfJsRes.getLowTemp().toString()));
+
+
+                            arrListDays = getDailyWeatherJson(response);
+
+                            arrListHours = getHourlyWeatherJson(response);
+
+                            arrListMinutes = getMinutelyWeatherJson(response);
+
+                            //Parcelables: datos que se pasan por medio de los intents
 
                         }catch (JSONException error){
 
@@ -164,6 +193,10 @@ public class MainActivity extends Activity {
                 //se crea el intent desde que actividad esta y la actividad para donde va en este caso
                 //pasa de la MainActivity.this a DailyWeatherActivity.class
                 Intent dailyActivityIntent = new Intent(MainActivity.this,DailyWeatherActivity.class);
+
+                //parcelable
+                dailyActivityIntent.putParcelableArrayListExtra("days",arrListDays);
+
                 startActivity(dailyActivityIntent);
             }
         });
@@ -174,13 +207,13 @@ public class MainActivity extends Activity {
 
         final CurrentWeather cuOfJs = new CurrentWeather(activity);
 
-        String timeZone = response.getString("timezone");
+        String timeZone = response.getString(TIMEZONE);
         JSONObject currently = response.getJSONObject("currently");
-        JSONObject daily = response.getJSONObject("daily");
-        JSONArray dailyDataArray = daily.getJSONArray("data");
+        JSONObject daily = response.getJSONObject(DAILY);
+        JSONArray dailyDataArray = daily.getJSONArray(DATA);
         JSONObject dailyToday = dailyDataArray.getJSONObject(0);
 
-        cuOfJs.setDescription(currently.getString("summary"));
+        cuOfJs.setDescription(currently.getString(SUMMARY));
         cuOfJs.setIconImage(currently.getString("icon"));
         //en caso de necesitar redondear la cantidad se utiliza Math.round(int);
         cuOfJs.setCurrentTemp((double) Math.round(currently.getDouble("temperature")));
@@ -191,12 +224,101 @@ public class MainActivity extends Activity {
         return cuOfJs;
     }
 
+    //Metodo que retorna un array list de dias
+    private ArrayList<Day> getDailyWeatherJson(JSONObject response) throws JSONException{
+
+        DateFormat dateFormat = new SimpleDateFormat("EEEE"); //este es el patron de dia (SimpleDateFormat)
+
+        final ArrayList<Day> dayArrayResponseJs = new ArrayList<>();
+
+        JSONObject daily = response.getJSONObject(DAILY);
+
+        JSONArray dailyArray = daily.getJSONArray(DATA);
+
+        for (int i = 0; i < dailyArray.length(); i++){
+
+            JSONObject dayPosition = dailyArray.getJSONObject(i);
+
+            Day day = new Day();
+
+            day.setDayName(dateFormat.format(dayPosition.getLong(TIME) * 1000));
+            day.setDescription(dayPosition.getString(SUMMARY));
+            day.setProbability(dayPosition.getString(PRECIP_PROBABILITY));
+
+            dayArrayResponseJs.add(day);
+        }
+
+        return dayArrayResponseJs;
+    }
+
+    private ArrayList<Hour> getHourlyWeatherJson(JSONObject response) throws JSONException{
+
+        String timeZone = response.getString(TIMEZONE);
+
+        DateFormat dateFormatHour = new SimpleDateFormat("HH:mm");
+        //setear la timezone que indica la API
+        dateFormatHour.setTimeZone(TimeZone.getTimeZone(timeZone));
+
+        ArrayList<Hour> hourArrList = new ArrayList<>();
+
+        JSONObject hourly = response.getJSONObject("hourly");
+        JSONArray hourlyArray = hourly.getJSONArray(DATA);
+
+        for (int i = 0; i < hourlyArray.length(); i++){
+
+            Hour hour = new Hour();
+
+            JSONObject hourJson = hourlyArray.getJSONObject(i);
+
+            hour.setTitle(dateFormatHour.format(hourJson.getLong(TIME)*1000));
+            hour.setDescription(hourJson.getString(SUMMARY));
+
+            hourArrList.add(hour);
+        }
+
+        return hourArrList;
+    }
+
+    private ArrayList<Minute> getMinutelyWeatherJson(JSONObject response) throws JSONException{
+
+        String timeZone = response.getString(TIMEZONE);
+
+        DateFormat dateFormatHour = new SimpleDateFormat("HH:mm:ss");
+        //setear la timezone que indica la API
+        dateFormatHour.setTimeZone(TimeZone.getTimeZone(timeZone));
+
+        ArrayList<Minute> minuteArrList = new ArrayList<>();
+
+        JSONObject minutely = response.getJSONObject(MINUTELY);
+        JSONArray minutelyArray = minutely.getJSONArray(DATA);
+
+        for (int i = 0; i < minutelyArray.length(); i++){
+
+            Minute minute = new Minute();
+
+            JSONObject minuteJson = minutelyArray.getJSONObject(i);
+
+            minute.setTitle(dateFormatHour.format(minuteJson.getLong(TIME)*1000));
+            minute.setRainProbability(minuteJson.getString(PRECIP_PROBABILITY));
+
+            minuteArrList.add(minute);
+        }
+
+        return minuteArrList;
+    }
+
     //forma mas practica de añadir eventos click a los elementos
 
     @OnClick(R.id.btnMenu2TextView)
     public void hourlyForecastClick (){
 
         Intent hourlyActivityIntent = new Intent(MainActivity.this,HourlyForecastActivity.class);
+
+        //en este intent se añade un extra llamado socialNumber con el valor de tipo int
+        hourlyActivityIntent.putExtra("SocialNumber",1024524163);
+
+        hourlyActivityIntent.putParcelableArrayListExtra("hours",arrListHours);
+
         startActivity(hourlyActivityIntent);
     }
 
@@ -204,6 +326,7 @@ public class MainActivity extends Activity {
     public void minutelyWeatherClick (){
 
         Intent minutelyActivityIntent = new Intent(MainActivity.this,MinutelyWeatherActivity.class);
+        minutelyActivityIntent.putParcelableArrayListExtra("minutes",arrListMinutes);
         startActivity(minutelyActivityIntent);
     }
 }

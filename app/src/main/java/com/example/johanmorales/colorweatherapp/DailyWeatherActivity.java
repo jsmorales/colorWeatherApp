@@ -24,9 +24,9 @@ public class DailyWeatherActivity extends ListActivity {
 
         //En un ArrayList se agregan los dias de la semana
 
-        ArrayList<Day> daysArray = new ArrayList<>();
+        ArrayList<Day> daysArray = getIntent().getParcelableArrayListExtra("days");
 
-        for (int i = 0; i < 500; i++){
+        /*for (int i = 0; i < 500; i++){
 
             Day dia = new Day();
 
@@ -35,7 +35,7 @@ public class DailyWeatherActivity extends ListActivity {
             dia.setProbability("Lluvia del 20%");
 
             daysArray.add(dia);
-        }
+        }*/
 
         DailyWeatherAdapter diaAdaptador = new DailyWeatherAdapter(daysArray, this);
         setListAdapter(diaAdaptador);

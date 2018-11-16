@@ -3,6 +3,7 @@ package com.example.johanmorales.colorweatherapp;
 import android.app.Activity;
 import android.app.ListActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ListView;
 
 import com.example.johanmorales.colorweatherapp.Adapters.HourlyWeatherAdapter;
@@ -14,6 +15,8 @@ import butterknife.ButterKnife;
 
 public class HourlyForecastActivity extends Activity {
 
+    public static final String TAG = MainActivity.class.getSimpleName();
+
     @BindView(R.id.hourlyListView) ListView hourlyListView;
 
     @Override
@@ -23,9 +26,14 @@ public class HourlyForecastActivity extends Activity {
 
         ButterKnife.bind(this);
 
-        ArrayList<Hour> hoursListView = new ArrayList<>();
+        //prueba de intent, como pasar informacion de una actividad a otra
+        int socialNumber = getIntent().getIntExtra("SocialNumber",0);
 
-        for (int i = 0; i < 500; i++){
+        Log.d(TAG,"El socialNumber es: "+socialNumber);
+
+        ArrayList<Hour> hoursListView = getIntent().getParcelableArrayListExtra("hours");
+
+        /*for (int i = 0; i < 500; i++){
 
             Hour hora = new Hour();
 
@@ -33,7 +41,7 @@ public class HourlyForecastActivity extends Activity {
             hora.setDescription("Sunny");
 
             hoursListView.add(hora);
-        }
+        }*/
 
         //adapter implementation
         HourlyWeatherAdapter hourlyAdapter = new HourlyWeatherAdapter(hoursListView,this);

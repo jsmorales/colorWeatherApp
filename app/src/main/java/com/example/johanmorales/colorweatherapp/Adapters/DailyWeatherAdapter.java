@@ -19,8 +19,8 @@ import java.util.ArrayList;
 public class DailyWeatherAdapter extends BaseAdapter {
 
     //este adaptador tendra un array de dias de la clase Day y un context
-    ArrayList<Day> daysArray;
-    Context contexto;
+    private ArrayList<Day> daysArray;
+    private Context contexto;
 
     public DailyWeatherAdapter (ArrayList<Day> daysArray, Context contexto){
 
@@ -30,6 +30,11 @@ public class DailyWeatherAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
+
+        //validación en caso de que no llegue nada al arrayList devolver 0 para que no crashee la app
+        if(daysArray == null)
+            return 0;
+
         return daysArray.size();
     }
 

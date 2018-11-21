@@ -12,7 +12,8 @@
         android:textStyle="bold"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="12:00" />
+        android:text="12:00"
+        android:layout_marginBottom="-19dp"/>
 
     <TextView
         android:id="@+id/descriptionHourlyTextView"

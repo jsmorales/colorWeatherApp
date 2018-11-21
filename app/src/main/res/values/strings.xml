@@ -2,9 +2,10 @@
     <string name="app_name">colorWeatherApp</string>
     <string name="hourly_forecast">Hourly Forecast</string>
     <string name="daily_forecast">Daily Forecast</string>
-    <string name="partly_cloudy">Partly Cloudy</string>
+    <string name="partly_cloudy">--</string>
     <string name="daily_btn_title">Daily</string>
     <string name="hourly_btn_title">Hourly</string>
     <string name="minutetly_btn_title">Minutetly</string>
     <string name="minutely_forecast">Minutely Forecast</string>
+    <string name="no_hay_datos_que_mostrar">No hay datos que mostrar.</string>
 </resources>

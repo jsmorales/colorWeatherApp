@@ -12,15 +12,17 @@
         style="@style/mainStyleColorWeatherApp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="-19dp"
         tools:text="Today" />
 
     <TextView
         android:id="@+id/descriptionListTextView"
         style="@style/mainStyleColorWeatherApp"
-        android:textSize="18sp"
+        android:textSize="15sp"
+        android:layout_marginBottom="-15dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Partly Cloudy in the morning." />
+        tools:text="Partly Cloudy in the morning." />
 
     <TextView
         android:id="@+id/probabilityListTextView"
@@ -28,5 +30,5 @@
         android:textSize="18sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Rain Probability: 0%" />
+        tools:text="Rain Probability: 0%" />
 </LinearLayout>

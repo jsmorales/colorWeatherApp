@@ -5,6 +5,7 @@ import android.app.ListActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.johanmorales.colorweatherapp.Adapters.HourlyWeatherAdapter;
 
@@ -18,6 +19,7 @@ public class HourlyForecastActivity extends Activity {
     public static final String TAG = MainActivity.class.getSimpleName();
 
     @BindView(R.id.hourlyListView) ListView hourlyListView;
+    @BindView(R.id.emptyTextView) TextView emptyTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +35,9 @@ public class HourlyForecastActivity extends Activity {
 
         ArrayList<Hour> hoursListView = getIntent().getParcelableArrayListExtra("hours");
 
+
+        //Log.d(TAG,"NULL HORAS: "+String.valueOf(hoursListView == null));
+
         /*for (int i = 0; i < 500; i++){
 
             Hour hora = new Hour();
@@ -47,5 +52,7 @@ public class HourlyForecastActivity extends Activity {
         HourlyWeatherAdapter hourlyAdapter = new HourlyWeatherAdapter(hoursListView,this);
 
         hourlyListView.setAdapter(hourlyAdapter);
+        //setear la view de empty
+        hourlyListView.setEmptyView(emptyTextView);
     }
 }

@@ -24,6 +24,8 @@ public class HourlyWeatherAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
+        if(hoursArray == null)
+            return 0;
         return hoursArray.size();
     }
 

@@ -52,6 +52,8 @@ public class DailyWeatherActivity extends ListActivity {
         Una ListView debe tener el id @android:id/list para que tu ListActivity la pueda usar.
         Puedes implementar el método onListItemClick() para detectar cuando un elemento de tu lista recibe un click del usuario(touch)
         Usas el método setListAdapter() para asignarle su adaptador a una lista.
+
+        Esta Activity al ser extendida de ListActivity reconoce el TextView @android:id/empty y solo lo muestra cuando no hay datos dentro de la lista.
         * */
     }
 }

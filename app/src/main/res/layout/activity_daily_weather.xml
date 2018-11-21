@@ -24,5 +24,18 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/MinutelyWeatherTitleTextView"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:divider="@null"
+        android:dividerHeight="12dp"
+        android:padding="10dp"/>
+
+    <TextView
+        android:id="@android:id/empty"
+        style="@style/mainStyleColorWeatherApp"
+        android:textSize="20dp"
+        android:layout_centerInParent="true"
+        android:text="@string/no_hay_datos_que_mostrar"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content" />
+
 </RelativeLayout>

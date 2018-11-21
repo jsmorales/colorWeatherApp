@@ -12,12 +12,16 @@ public class Hour implements Parcelable {
         description = in.readString();
     }
 
+    //sin el constructor la clase que implementa parcelable no funciona
+    //asi no tenga nada dentro
+
     public Hour() {
 
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        //se pasan los atributos que se van a escribir en este caso son solo 2 string
         dest.writeString(title);
         dest.writeString(description);
     }
@@ -25,7 +29,7 @@ public class Hour implements Parcelable {
     @Override
     public int describeContents() {
         return 0;
-    }
+    } //esto no se usa realmente
 
     public static final Creator<Hour> CREATOR = new Creator<Hour>() {
         @Override

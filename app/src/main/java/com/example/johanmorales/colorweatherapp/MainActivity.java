@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
@@ -160,6 +161,8 @@ public class MainActivity extends Activity {
 
                             arrListMinutes = getMinutelyWeatherJson(response);
 
+                            Toast.makeText(MainActivity.this,"Datos Cargados Correctamente.",Toast.LENGTH_LONG).show();
+
                             //Parcelables: datos que se pasan por medio de los intents
 
                         }catch (JSONException error){
@@ -172,10 +175,12 @@ public class MainActivity extends Activity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         // TODO: Handle error
+                        //Log.e(TAG, error.getMessage());
+                        //descriptionTextView.setText(error.getMessage());
 
-                        Log.e(TAG, error.getMessage());
+                        //despliegue del error en un toast
+                        Toast.makeText(MainActivity.this,error.getMessage(),Toast.LENGTH_LONG).show();
 
-                        descriptionTextView.setText(error.getMessage());
                     }
                 });
 
@@ -241,9 +246,9 @@ public class MainActivity extends Activity {
 
             Day day = new Day();
 
-            day.setDayName(dateFormat.format(dayPosition.getLong(TIME) * 1000));
+            day.setDayName(dateFormat.format(dayPosition.getLong(TIME) * 1000).toUpperCase());
             day.setDescription(dayPosition.getString(SUMMARY));
-            day.setProbability(dayPosition.getString(PRECIP_PROBABILITY));
+            day.setProbability("Rain Probability: "+(Double.valueOf(dayPosition.getString(PRECIP_PROBABILITY))*100)+"%");
 
             dayArrayResponseJs.add(day);
         }
@@ -283,7 +288,7 @@ public class MainActivity extends Activity {
 
         String timeZone = response.getString(TIMEZONE);
 
-        DateFormat dateFormatHour = new SimpleDateFormat("HH:mm:ss");
+        DateFormat dateFormatHour = new SimpleDateFormat("HH:mm");
         //setear la timezone que indica la API
         dateFormatHour.setTimeZone(TimeZone.getTimeZone(timeZone));
 
@@ -299,7 +304,8 @@ public class MainActivity extends Activity {
             JSONObject minuteJson = minutelyArray.getJSONObject(i);
 
             minute.setTitle(dateFormatHour.format(minuteJson.getLong(TIME)*1000));
-            minute.setRainProbability(minuteJson.getString(PRECIP_PROBABILITY));
+            minute.setRainProbability("Rain Probability: "+(Double.valueOf(minuteJson.getString(PRECIP_PROBABILITY))*100)+"%");
+            //minute.setRainProbability("Rain Probability: "+minuteJson.getString(PRECIP_PROBABILITY));
 
             minuteArrList.add(minute);
         }

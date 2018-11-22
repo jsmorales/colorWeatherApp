@@ -59,6 +59,7 @@ public class MainActivity extends Activity {
     @BindView(R.id.highTempTextView) TextView highTempTextView;
     @BindView(R.id.lowTempTextView) TextView lowTempTextView;
     @BindView(R.id.timeZoneTextView) TextView timeZoneTextView;
+    @BindView(R.id.refreshImageView) ImageView refreshImageView;
 
     //los drawables son los recursos como imagenes que se encuentran en la carpeta res
     //añadiendo un drawable con butterknife
@@ -71,9 +72,6 @@ public class MainActivity extends Activity {
     ArrayList<Day> arrListDays;
     ArrayList<Hour> arrListHours;
     ArrayList<Minute> arrListMinutes;
-
-
-    private FusedLocationProviderClient mFusedLocationClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,7 +104,7 @@ public class MainActivity extends Activity {
         //--------------------------------------------------------------------------------------
 
         // Instantiate the RequestQueue.
-        RequestQueue queue = Volley.newRequestQueue(this);
+
 
         /*Ejemplo de
         String url ="http://www.google.com";
@@ -135,67 +133,8 @@ public class MainActivity extends Activity {
             Una ImageView contiene imágenes. En tu layout se utiliza el atributo android:src para especificar la imagen que usaras. En tu código utilizas setImageResource() para especificar la imagen
         * */
 
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        executeJsonRequest();
 
-
-        String APIKEY = "4c6fbf2dde7f441af012c072c04ac356";
-        String latitude = "37.8267";
-        String longitude = "-122.4233";
-
-        String urlForecast = "https://api.darksky.net/forecast/"+APIKEY+"/"+latitude+","+longitude+"?units=si&lang=es";
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.GET, urlForecast, null, new Response.Listener<JSONObject>() {
-
-                    //cuOfJs
-
-                    @SuppressLint("SetTextI18n")
-                    @Override
-                    public void onResponse(JSONObject response) {
-
-                        try {
-
-                            CurrentWeather cuOfJsRes = getCurrentWeatherObject(MainActivity.this, response);
-
-                            iconImageView.setImageDrawable(cuOfJsRes.getIconDrawableResource());
-                            timeZoneTextView.setText(cuOfJsRes.getTimeZone());
-                            descriptionTextView.setText(cuOfJsRes.getDescription());
-                            currentTempTextView.setText(cuOfJsRes.getCurrentTemp().toString());
-                            highTempTextView.setText(String.format("H: %s°",cuOfJsRes.getHighTemp().toString()));
-                            lowTempTextView.setText(String.format("L: %s°",cuOfJsRes.getLowTemp().toString()));
-
-
-                            arrListDays = getDailyWeatherJson(response);
-
-                            arrListHours = getHourlyWeatherJson(response);
-
-                            arrListMinutes = getMinutelyWeatherJson(response);
-
-                            Toast.makeText(MainActivity.this,"Datos Cargados Correctamente.",Toast.LENGTH_LONG).show();
-
-                            //Parcelables: datos que se pasan por medio de los intents
-
-                        }catch (JSONException error){
-
-                            descriptionTextView.setText(error.getMessage());
-                        }
-                    }
-                }, new Response.ErrorListener() {
-
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // TODO: Handle error
-                        //Log.e(TAG, error.getMessage());
-                        //descriptionTextView.setText(error.getMessage());
-
-                        //despliegue del error en un toast
-                        Toast.makeText(MainActivity.this,error.getMessage(),Toast.LENGTH_LONG).show();
-
-                    }
-                });
-
-        // Add the request to the RequestQueue.
-        queue.add(jsonObjectRequest);
         //--------------------------------------------------------------------------------------
 
         //forma tradicional de trabajar los eventos click
@@ -216,6 +155,45 @@ public class MainActivity extends Activity {
             }
         });
 
+    }
+
+    private void executeJsonRequest (){
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        String APIKEY = "4c6fbf2dde7f441af012c072c04ac356";
+        String latitude = "37.8267";
+        String longitude = "-122.4233";
+
+        String urlForecast = "https://api.darksky.net/forecast/"+APIKEY+"/"+latitude+","+longitude+"?units=si&lang=es";
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.GET, urlForecast, null, new Response.Listener<JSONObject>() {
+
+                    //cuOfJs
+
+                    @SuppressLint("SetTextI18n")
+                    @Override
+                    public void onResponse(final JSONObject response) {
+
+                        executeResponseJsonApp(response);
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // TODO: Handle error
+                        //Log.e(TAG, error.getMessage());
+                        //descriptionTextView.setText(error.getMessage());
+
+                        //despliegue del error en un toast
+                        Toast.makeText(MainActivity.this,error.getMessage(),Toast.LENGTH_LONG).show();
+
+                    }
+                });
+
+        // Add the request to the RequestQueue.
+        queue.add(jsonObjectRequest);
     }
 
     private CurrentWeather getCurrentWeatherObject (Activity activity, JSONObject response) throws JSONException {
@@ -323,6 +301,37 @@ public class MainActivity extends Activity {
         return minuteArrList;
     }
 
+    private void executeResponseJsonApp(JSONObject response){
+
+        try {
+
+            CurrentWeather cuOfJsRes = getCurrentWeatherObject(MainActivity.this, response);
+
+            iconImageView.setImageDrawable(cuOfJsRes.getIconDrawableResource());
+            timeZoneTextView.setText(cuOfJsRes.getTimeZone());
+            descriptionTextView.setText(cuOfJsRes.getDescription());
+            currentTempTextView.setText(cuOfJsRes.getCurrentTemp().toString());
+            highTempTextView.setText(String.format("H: %s°",cuOfJsRes.getHighTemp().toString()));
+            lowTempTextView.setText(String.format("L: %s°",cuOfJsRes.getLowTemp().toString()));
+
+
+            arrListDays = getDailyWeatherJson(response);
+
+            arrListHours = getHourlyWeatherJson(response);
+
+            arrListMinutes = getMinutelyWeatherJson(response);
+
+            Toast.makeText(MainActivity.this,"Datos Cargados Correctamente.",Toast.LENGTH_LONG).show();
+
+            //Parcelables: datos que se pasan por medio de los intents
+
+        }catch (JSONException error){
+
+            descriptionTextView.setText(error.getMessage());
+        }
+
+    }
+
     //forma mas practica de añadir eventos click a los elementos
 
     @OnClick(R.id.btnMenu2TextView)
@@ -344,5 +353,11 @@ public class MainActivity extends Activity {
         Intent minutelyActivityIntent = new Intent(MainActivity.this,MinutelyWeatherActivity.class);
         minutelyActivityIntent.putParcelableArrayListExtra("minutes",arrListMinutes);
         startActivity(minutelyActivityIntent);
+    }
+
+    @OnClick(R.id.refreshImageView)
+    public void refreshClick(){
+
+        executeJsonRequest();
     }
 }

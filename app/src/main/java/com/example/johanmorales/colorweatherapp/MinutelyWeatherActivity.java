@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.TextView;
 
 import com.example.johanmorales.colorweatherapp.Adapters.MinutelyWeatherAdapter;
 
@@ -15,6 +17,7 @@ import butterknife.ButterKnife;
 public class MinutelyWeatherActivity extends Activity {
 
     @BindView(R.id.minutelyRecyclerView) RecyclerView minutelyRecyclerView;
+    @BindView(R.id.emptyRecyclerTextView) TextView emptyRecyclerTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,19 +38,33 @@ public class MinutelyWeatherActivity extends Activity {
             minuteListView.add(minute);
         }*/
 
-        //The adapter type Recycler
-        MinutelyWeatherAdapter minutelyWeatherAdapter = new MinutelyWeatherAdapter(minuteListView, this);
+        //validacion en caso de que no hallan datos que desplegar y no se crashee nuestra app
 
-        minutelyRecyclerView.setAdapter(minutelyWeatherAdapter);
+        if(minuteListView != null && !minuteListView.isEmpty()){
 
-        //para que el recycler view sepa como comportarse se crea un LayoutManager
-        RecyclerView.LayoutManager managerLayout = new LinearLayoutManager(this);
+            //The adapter type Recycler
+            MinutelyWeatherAdapter minutelyWeatherAdapter = new MinutelyWeatherAdapter(minuteListView, this);
 
-        //se setea el layoutmanager recien creado
-        minutelyRecyclerView.setLayoutManager(managerLayout);
+            minutelyRecyclerView.setAdapter(minutelyWeatherAdapter);
 
-        //esta opcion ajusta los recursos para que sean mejor administrados
-        //ayuda a que el recicler trabaje con un mejor rendimiento
-        minutelyRecyclerView.setHasFixedSize(true);
+            //para que el recycler view sepa como comportarse se crea un LayoutManager
+            RecyclerView.LayoutManager managerLayout = new LinearLayoutManager(this);
+
+            //se setea el layoutmanager recien creado
+            minutelyRecyclerView.setLayoutManager(managerLayout);
+
+            //esta opcion ajusta los recursos para que sean mejor administrados
+            //ayuda a que el recicler trabaje con un mejor rendimiento
+            minutelyRecyclerView.setHasFixedSize(true);
+
+            //empty view no visible
+            emptyRecyclerTextView.setVisibility(View.INVISIBLE);
+
+        }else{
+            //empty view visible
+            emptyRecyclerTextView.setVisibility(View.VISIBLE);
+        }
+
+
     }
 }

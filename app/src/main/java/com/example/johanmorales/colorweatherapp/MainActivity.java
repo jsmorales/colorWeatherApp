@@ -1,10 +1,17 @@
 package com.example.johanmorales.colorweatherapp;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Looper;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -21,6 +28,14 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.SettingsClient;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,6 +52,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
+
 public class MainActivity extends Activity {
 
     public static final String TAG = MainActivity.class.getSimpleName(); //gets the name of the app
@@ -49,21 +66,30 @@ public class MainActivity extends Activity {
     public static final String PRECIP_PROBABILITY = "precipProbability";
     public static final String MINUTELY = "minutely";
     public static final String TIMEZONE = "timezone";
+    public static final int LOCATION_PERMISSION = 1;
 
     private TextView dailyButton;
 
     //ligando los elementos de la UI con butternkife
-    @BindView(R.id.iconImageView) ImageView iconImageView;
-    @BindView(R.id.descriptionTextView) TextView descriptionTextView;
-    @BindView(R.id.currentTempTextView) TextView currentTempTextView;
-    @BindView(R.id.highTempTextView) TextView highTempTextView;
-    @BindView(R.id.lowTempTextView) TextView lowTempTextView;
-    @BindView(R.id.timeZoneTextView) TextView timeZoneTextView;
-    @BindView(R.id.refreshImageView) ImageView refreshImageView;
+    @BindView(R.id.iconImageView)
+    ImageView iconImageView;
+    @BindView(R.id.descriptionTextView)
+    TextView descriptionTextView;
+    @BindView(R.id.currentTempTextView)
+    TextView currentTempTextView;
+    @BindView(R.id.highTempTextView)
+    TextView highTempTextView;
+    @BindView(R.id.lowTempTextView)
+    TextView lowTempTextView;
+    @BindView(R.id.timeZoneTextView)
+    TextView timeZoneTextView;
+    @BindView(R.id.refreshImageView)
+    ImageView refreshImageView;
 
     //los drawables son los recursos como imagenes que se encuentran en la carpeta res
     //añadiendo un drawable con butterknife
-    @BindDrawable(R.drawable.clear_night) Drawable clearNigthDrawable;
+    @BindDrawable(R.drawable.clear_night)
+    Drawable clearNigthDrawable;
 
     //with butterKnife forma de asignar una view con un elemento
     //@BindView(R.id.btnMenu2TextView) TextView hourlyButton;
@@ -72,6 +98,10 @@ public class MainActivity extends Activity {
     ArrayList<Day> arrListDays;
     ArrayList<Hour> arrListHours;
     ArrayList<Minute> arrListMinutes;
+
+    private LocationRequest mLocationRequest;
+    private long UPDATE_INTERVAL = 10 * 1000;  /* 10 secs */
+    private long FASTEST_INTERVAL = 2000; /* 2 sec */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,10 +176,10 @@ public class MainActivity extends Activity {
                 //Log.d(TAG, "Presionando daily button!!");
                 //se crea el intent desde que actividad esta y la actividad para donde va en este caso
                 //pasa de la MainActivity.this a DailyWeatherActivity.class
-                Intent dailyActivityIntent = new Intent(MainActivity.this,DailyWeatherActivity.class);
+                Intent dailyActivityIntent = new Intent(MainActivity.this, DailyWeatherActivity.class);
 
                 //parcelable
-                dailyActivityIntent.putParcelableArrayListExtra("days",arrListDays);
+                dailyActivityIntent.putParcelableArrayListExtra("days", arrListDays);
 
                 startActivity(dailyActivityIntent);
             }
@@ -157,13 +187,82 @@ public class MainActivity extends Activity {
 
     }
 
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (grantResults.length > 0 && ((grantResults[0] == PackageManager.PERMISSION_GRANTED) && (grantResults[1] == PackageManager.PERMISSION_GRANTED)) ) {
+            //se concedieron los permisos se puede ejecutar json request
+            executeJsonRequest();
+        }
+    }
+
     private void executeJsonRequest (){
+
+        String permisoLocation = Manifest.permission.ACCESS_COARSE_LOCATION;
+        String permisoFineLocation = Manifest.permission.ACCESS_FINE_LOCATION;
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+
+
+            if (ActivityCompat.checkSelfPermission(this, permisoLocation) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, permisoFineLocation) != PackageManager.PERMISSION_GRANTED) {
+
+
+                //pedir los 2 permisos
+
+                requestPermissions(new String[]{permisoLocation, permisoFineLocation}, LOCATION_PERMISSION);
+
+
+            }else{
+
+                Log.d(TAG, "Ya tiene los permisos requeriddos.");
+
+                // Create the location request to start receiving updates
+                mLocationRequest = new LocationRequest();
+                mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+                //mLocationRequest.setInterval(UPDATE_INTERVAL);
+                //mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
+
+                // Create LocationSettingsRequest object using location request
+                LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
+                builder.addLocationRequest(mLocationRequest);
+                LocationSettingsRequest locationSettingsRequest = builder.build();
+
+                // Check whether location settings are satisfied
+                // https://developers.google.com/android/reference/com/google/android/gms/location/SettingsClient
+                SettingsClient settingsClient = LocationServices.getSettingsClient(this);
+                settingsClient.checkLocationSettings(locationSettingsRequest);
+
+                // new Google API SDK v11 uses getFusedLocationProviderClient(this)
+                getFusedLocationProviderClient(this).requestLocationUpdates(mLocationRequest, new LocationCallback() {
+                            @Override
+                            public void onLocationResult(LocationResult locationResult) {
+
+                                Log.d(TAG,"Ejecutando onLocationResult");
+
+                                // do work here
+                                onLocationChanged(locationResult.getLastLocation());
+
+                                executeJsonRequestWithLocation(locationResult.getLastLocation());
+                            }
+                        },
+                        null); //Looper.myLooper()
+            }
+
+
+        }
+
+    }
+
+    public void executeJsonRequestWithLocation(Location location){
 
         RequestQueue queue = Volley.newRequestQueue(this);
 
         String APIKEY = "4c6fbf2dde7f441af012c072c04ac356";
-        String latitude = "37.8267";
-        String longitude = "-122.4233";
+
+        String latitude = Double.toString(location.getLatitude());
+        String longitude = Double.toString(location.getLongitude());
 
         String urlForecast = "https://api.darksky.net/forecast/"+APIKEY+"/"+latitude+","+longitude+"?units=si&lang=es";
 
@@ -194,6 +293,19 @@ public class MainActivity extends Activity {
 
         // Add the request to the RequestQueue.
         queue.add(jsonObjectRequest);
+    }
+
+    public void onLocationChanged(Location location) {
+        // New location has now been determined
+        String msg = "Localizacion actualizada: " +
+                Double.toString(location.getLatitude()) + "," +
+                Double.toString(location.getLongitude());
+
+        Log.d(TAG,msg);
+
+        Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+        // You can now create a LatLng Object for use with maps
+
     }
 
     private CurrentWeather getCurrentWeatherObject (Activity activity, JSONObject response) throws JSONException {
@@ -321,7 +433,7 @@ public class MainActivity extends Activity {
 
             arrListMinutes = getMinutelyWeatherJson(response);
 
-            Toast.makeText(MainActivity.this,"Datos Cargados Correctamente.",Toast.LENGTH_LONG).show();
+            Toast.makeText(MainActivity.this,"Información actualizada.",Toast.LENGTH_LONG).show();
 
             //Parcelables: datos que se pasan por medio de los intents
 
